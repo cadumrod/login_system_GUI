@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from database import db
 
 
 # Function to center the window
@@ -23,14 +24,89 @@ window = ctk.CTk()
 window.geometry("500x300")
 window.title("Sistema de login")
 window.resizable(False, False)
-window.iconbitmap("python.ico")
+window.iconbitmap('assets\\icons\\python.ico')
 
 # Center the main window
 center_window(window, 500, 300)
 
 
+# Register success function
+def show_success_popup():
+    popup = ctk.CTkToplevel()
+    popup.title("Sucesso")
+    popup.after(
+        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+
+    # Popup dimensions
+    width, height = 300, 150
+
+    # Get screen width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculates position x and y to center window
+    position_x = int((screen_width - width) / 2)
+    position_y = int((screen_height - height) / 2)
+
+    # Define window geometry
+    popup.geometry(f"{width}x{height}+{position_x}+{position_y}")
+
+    # Get popup on top
+    popup.lift()
+    popup.grab_set()
+
+    # Success message
+    label = ctk.CTkLabel(popup, text="Cadastro efetuado com sucesso!")
+    label.pack(pady=20)
+
+    # Function to destroy popup and register windows
+    def close_popup():
+        popup.destroy()
+        registration_window.destroy()
+
+    # Close popup button
+    close_button = ctk.CTkButton(popup, text="OK", command=close_popup)
+    close_button.pack(pady=10)
+
+
+# Register error function
+def error_popup():
+    popup = ctk.CTkToplevel()
+    popup.title("Erro")
+    popup.after(
+        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+
+    # Popup dimensions
+    width, height = 300, 150
+
+    # Get screen width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculates position x and y to center window
+    position_x = int((screen_width - width) / 2)
+    position_y = int((screen_height - height) / 2)
+
+    # Define window geometry
+    popup.geometry(f"{width}x{height}+{position_x}+{position_y}")
+
+    # Get popup on top
+    popup.lift()
+    popup.grab_set()
+
+    # Error message
+    label = ctk.CTkLabel(
+        popup, text="As senhas não coincidem. Tente novamente.")
+    label.pack(pady=20)
+
+    # Close popup button
+    close_button = ctk.CTkButton(popup, text="OK", command=popup.destroy)
+    close_button.pack(pady=10)
+
+
 # Fuction for window register
 def open_registration_window():
+    global registration_window
     # Disable the registration button to prevent opening multiple windows
     btn_register_window.configure(state="disabled")
 
@@ -39,7 +115,7 @@ def open_registration_window():
     registration_window.geometry("400x300")
     registration_window.title("Cadastro de Usuário")
     registration_window.after(
-        200, lambda: registration_window.iconbitmap('python.ico'))
+        200, lambda: registration_window.iconbitmap('assets\\icons\\python.ico'))
     center_window(registration_window, 400, 300)
 
     # Ensure the window is on top
@@ -60,19 +136,34 @@ def open_registration_window():
                          text="Cadastro de Usuário", font=("Arial", 20))
     label.pack(padx=10, pady=10)
 
-    username = ctk.CTkEntry(registration_window,
-                            placeholder_text="Novo Usuário")
-    username.pack(padx=10, pady=10)
+    username_entry = ctk.CTkEntry(registration_window,
+                                  placeholder_text="Novo Usuário")
+    username_entry.pack(padx=10, pady=10)
 
-    password = ctk.CTkEntry(registration_window,
-                            placeholder_text="Nova Senha", show="*")
-    password.pack(padx=10, pady=10)
+    password_entry = ctk.CTkEntry(registration_window,
+                                  placeholder_text="Nova Senha", show="*")
+    password_entry.pack(padx=10, pady=10)
 
-    confirm_password = ctk.CTkEntry(
+    confirm_password_entry = ctk.CTkEntry(
         registration_window, placeholder_text="Confirme a Senha", show="*")
-    confirm_password.pack(padx=10, pady=10)
+    confirm_password_entry.pack(padx=10, pady=10)
 
-    btn_register = ctk.CTkButton(registration_window, text="Cadastrar")
+    # Get user insertions for register
+    def save_data():
+        conn = db.db_conn('database\\logsys.db')
+        db.create_table(conn)
+        username = username_entry.get()
+        password = password_entry.get()
+        confirm_password = confirm_password_entry.get()
+
+        if password == confirm_password:
+            db.insert_user(conn, username, password)
+            show_success_popup()
+        else:
+            error_popup()
+
+    btn_register = ctk.CTkButton(
+        registration_window, text="Efetuar Cadastro", command=save_data)
     btn_register.pack(pady=10, padx=10)
 
 
@@ -83,8 +174,8 @@ label.pack(padx=10, pady=10)
 user = ctk.CTkEntry(window, placeholder_text="Usuário")
 user.pack(padx=10, pady=10)
 
-password = ctk.CTkEntry(window, placeholder_text="Senha", show="*")
-password.pack(padx=10, pady=10)
+password_login = ctk.CTkEntry(window, placeholder_text="Senha", show="*")
+password_login.pack(padx=10, pady=10)
 
 checkbox = ctk.CTkCheckBox(window, text="Lembrar de mim")
 checkbox.pack(padx=10, pady=10)
