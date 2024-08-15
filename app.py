@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from database import db
+import bcrypt
 
 
 # Function to center the window
@@ -154,10 +155,12 @@ def open_registration_window():
         db.create_table(conn)
         username = username_entry.get()
         password = password_entry.get()
+        salt = bcrypt.gensalt()
+        hash_pw = bcrypt.hashpw(password.encode("utf-8"), salt)
         confirm_password = confirm_password_entry.get()
 
         if password == confirm_password:
-            db.insert_user(conn, username, password)
+            db.insert_user(conn, username, hash_pw)
             show_success_popup()
         else:
             error_popup()
