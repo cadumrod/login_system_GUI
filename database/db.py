@@ -32,8 +32,16 @@ def create_table(conn):
 create_table(conn)
 
 
+# Insert user in db
 def insert_user(conn, user, password):
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO Users (user,password) VALUES (?,?)", (user, password))
     conn.commit()
+
+
+# Check if user already exists
+def check_user_exists(conn, user):
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM users WHERE user = ?", (user,))
+    return cursor.fetchone() is not None

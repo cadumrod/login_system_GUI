@@ -62,6 +62,7 @@ def show_success_popup():
 
     # Function to destroy popup and register windows
     def close_popup():
+        btn_register_window.configure(state="normal")
         popup.destroy()
         registration_window.destroy()
 
@@ -98,6 +99,76 @@ def error_popup():
     # Error message
     label = ctk.CTkLabel(
         popup, text="As senhas não coincidem. Tente novamente.")
+    label.pack(pady=20)
+
+    # Close popup button
+    close_button = ctk.CTkButton(popup, text="OK", command=popup.destroy)
+    close_button.pack(pady=10)
+
+
+# User register error
+def user_exists_popup():
+    popup = ctk.CTkToplevel()
+    popup.title("Erro")
+    popup.after(
+        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+
+    # Popup dimensions
+    width, height = 300, 150
+
+    # Get screen width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculates position x and y to center window
+    position_x = int((screen_width - width) / 2)
+    position_y = int((screen_height - height) / 2)
+
+    # Define window geometry
+    popup.geometry(f"{width}x{height}+{position_x}+{position_y}")
+
+    # Get popup on top
+    popup.lift()
+    popup.grab_set()
+
+    # Error message
+    label = ctk.CTkLabel(
+        popup, text="Usuário já existe. Tente novamente.")
+    label.pack(pady=20)
+
+    # Close popup button
+    close_button = ctk.CTkButton(popup, text="OK", command=popup.destroy)
+    close_button.pack(pady=10)
+
+
+# Empty fields
+def empty_fields_popup():
+    popup = ctk.CTkToplevel()
+    popup.title("Erro")
+    popup.after(
+        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+
+    # Popup dimensions
+    width, height = 300, 150
+
+    # Get screen width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculates position x and y to center window
+    position_x = int((screen_width - width) / 2)
+    position_y = int((screen_height - height) / 2)
+
+    # Define window geometry
+    popup.geometry(f"{width}x{height}+{position_x}+{position_y}")
+
+    # Get popup on top
+    popup.lift()
+    popup.grab_set()
+
+    # Error message
+    label = ctk.CTkLabel(
+        popup, text="Campos não preenchidos corretamente.\nTente novamente.")
     label.pack(pady=20)
 
     # Close popup button
@@ -155,11 +226,24 @@ def open_registration_window():
         db.create_table(conn)
         username = username_entry.get()
         password = password_entry.get()
+
+        # Password encryption
         salt = bcrypt.gensalt()
         hash_pw = bcrypt.hashpw(password.encode("utf-8"), salt)
         confirm_password = confirm_password_entry.get()
 
-        if password == confirm_password:
+        # Check empty fields
+        if not username or not password or not confirm_password:
+            empty_fields_popup()
+            return
+
+        # Check if user exists
+        if db.check_user_exists(conn, username):
+            user_exists_popup()
+            return
+
+        # password check and user insert
+        elif password == confirm_password:
             db.insert_user(conn, username, hash_pw)
             show_success_popup()
         else:
