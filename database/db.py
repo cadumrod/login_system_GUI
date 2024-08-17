@@ -45,3 +45,11 @@ def check_user_exists(conn, user):
     cursor = conn.cursor()
     cursor.execute("SELECT 1 FROM users WHERE user = ?", (user,))
     return cursor.fetchone() is not None
+
+
+# Check user password
+def get_user_password(conn, user):
+    cursor = conn.cursor()
+    cursor.execute("SELECT password FROM users WHERE user = ?", (user,))
+    result = cursor.fetchone()
+    return result[0] if result else None
