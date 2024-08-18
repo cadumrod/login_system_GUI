@@ -72,7 +72,6 @@ Este projeto é um sistema de login com as seguintes funcionalidades:
 - `setup.py`: Script de instalação e configuração do projeto.
 - `db.py`: Script do banco de dados que se encontra dentro da pasta "database" deste repositório.
 - `python.ico`: Ícone utilizado para o app que se encontra dentro da pasta "assets/icons/" deste repositório.
-- `app.exe`: Executável que se encontra dentro da pasta "Sistema de login" deste repositório.
 - `README.md`: Este arquivo de documentação.
 - `requirements.txt`: Arquivo de requisitos com as dependências do projeto.
 - `LICENSE`: Licença MIT.
