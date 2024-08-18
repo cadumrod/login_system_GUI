@@ -1,7 +1,9 @@
+import os
+import os
+os.add_dll_directory(os.path.abspath('.'))
 import customtkinter as ctk
 from database import db
 import bcrypt
-import os
 import json
 import sys
 

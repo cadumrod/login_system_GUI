@@ -12,6 +12,7 @@ build_exe_options = {
 }
 
 
+
 executables = [
     Executable("app.py", base="Win32GUI", icon="assets/icons/python.ico")
 ]
