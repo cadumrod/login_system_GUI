@@ -1,38 +1,26 @@
-import sys
+import cx_Freeze
 import os
 from cx_Freeze import setup, Executable
 
 
-files = [
-    ('assets/icons/', 'assets/icons/'),
-    ('database/', 'database/')
-]
+include_files = ["assets", "assets", "database"]
 
 
-base = None
-if sys.platform == 'win32':
-    base = 'Win32GUI'
+build_exe_options = {
+    "packages": ["os", "customtkinter", "sqlite3", "bcrypt"],
+    "include_files": include_files,
+}
 
 
 executables = [
-    Executable(
-        script='app.py',
-        base=base,
-        icon='assets/icons/python.ico'
-    )
+    Executable("app.py", base="Win32GUI", icon="assets/icons/python.ico")
 ]
 
 
 setup(
-    name='Sistema de Login',
-    version='1.0',
-    description='Aplicação de sistema de login',
-    author='Carlos Rodrigues',
-    options={
-        'build_exe': {
-            'packages': ['os', 'customtkinter', 'sqlite3', 'bcrypt'],
-            'include_files': files,
-        }
-    },
+    name="Sistema de Login",
+    version="1.0",
+    description="Sistema de login",
+    options={"build_exe": build_exe_options},
     executables=executables
 )

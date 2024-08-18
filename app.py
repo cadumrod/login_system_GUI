@@ -3,6 +3,7 @@ from database import db
 import bcrypt
 import os
 import json
+import sys
 
 
 # Function to center the window
@@ -16,6 +17,8 @@ def center_window(window, width, height):
     window.geometry(f"{width}x{height}+{x_coordinate}+{y_coordinate}")
 
 
+
+
 # Setting colors
 ctk.set_appearance_mode("system")
 ctk.set_default_color_theme("dark-blue")
@@ -27,7 +30,10 @@ window = ctk.CTk()
 window.geometry("500x330")
 window.title("Sistema de login")
 window.resizable(False, False)
-window.iconbitmap('assets\\icons\\python.ico')
+window.iconbitmap(r"assets/icons/python.ico")
+
+
+
 
 # Center the main window
 center_window(window, 500, 330)
@@ -40,7 +46,7 @@ def show_success_popup():
     popup = ctk.CTkToplevel()
     popup.title("Sucesso")
     popup.after(
-        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: popup.iconbitmap(r"assets/icons/python.ico"))
 
     # Popup dimensions
     width, height = 300, 150
@@ -80,7 +86,7 @@ def error_popup():
     popup = ctk.CTkToplevel()
     popup.title("Erro")
     popup.after(
-        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: popup.iconbitmap(r"assets/icons/python.ico"))
 
     # Popup dimensions
     width, height = 300, 150
@@ -115,7 +121,7 @@ def user_exists_popup():
     popup = ctk.CTkToplevel()
     popup.title("Erro")
     popup.after(
-        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: popup.iconbitmap(r"assets/icons/python.ico"))
 
     # Popup dimensions
     width, height = 300, 150
@@ -150,7 +156,7 @@ def empty_fields_popup():
     popup = ctk.CTkToplevel()
     popup.title("Erro")
     popup.after(
-        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: popup.iconbitmap(r"assets/icons/python.ico"))
 
     # Popup dimensions
     width, height = 300, 150
@@ -185,7 +191,7 @@ def login_success_popup():
     popup = ctk.CTkToplevel()
     popup.title("Sucesso")
     popup.after(
-        200, lambda: popup.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: popup.iconbitmap(r"assets/icons/python.ico"))
 
     # Popup dimensions
     width, height = 300, 150
@@ -240,7 +246,7 @@ def open_registration_window():
     registration_window.geometry("400x300")
     registration_window.title("Cadastro de Usuário")
     registration_window.after(
-        200, lambda: registration_window.iconbitmap('assets\\icons\\python.ico'))
+        200, lambda: registration_window.iconbitmap(r"assets/icons/python.ico"))
     center_window(registration_window, 400, 300)
 
     # Ensure the window is on top
