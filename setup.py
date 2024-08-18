@@ -24,9 +24,9 @@ executables = [
 
 
 setup(
-    name='Sistema de login',
+    name='Sistema de Login',
     version='1.0',
-    description='Sistema de login desenvolvido em python e SQLite3',
+    description='Aplicação de sistema de login',
     author='Carlos Rodrigues',
     options={
         'build_exe': {
