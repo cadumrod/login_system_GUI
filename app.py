@@ -1,6 +1,8 @@
 import customtkinter as ctk
 from database import db
 import bcrypt
+import os
+import json
 
 
 # Function to center the window
@@ -30,6 +32,8 @@ window.iconbitmap('assets\\icons\\python.ico')
 # Center the main window
 center_window(window, 500, 330)
 
+
+######################################## APP FUNCTIONS ########################################
 
 # Register success function
 def show_success_popup():
@@ -227,6 +231,7 @@ def open_registration_window():
 
     # Remove error label from main window
     error_label.configure(text="")
+
     # Disable the registration button to prevent opening multiple windows
     btn_register_window.configure(state="disabled")
 
@@ -306,40 +311,84 @@ def open_registration_window():
 def login_user():
     conn = db.db_conn(db.db_path)
 
-    # Get username and clen input field
+    # Get username and clean input field
     username = user.get().strip()
+    print(f"Path to database: {db.db_path}")
 
-    # Get password and clen input field
+    # Get password and clean input field
     password = password_login.get().strip()
+    print(f"Password entered: {password}")
 
     # Check if user exists
     if not db.check_user_exists(conn, username):
+        print("User does not exist in the database.")
         display_login_msg(
             "Usuário ou senha incorretos.\nPor favor tente novamente.")
         return
+    else:
+        print("User exists in the database.")
 
     # If user exists, gets password hash
     password_hash = db.get_user_password(conn, username)
+    print(f"Password hash from DB: {password_hash}")
 
     # Check if provided password is equal do stored hash
     if bcrypt.checkpw(password.encode("utf-8"), password_hash):
+        print("Password matches.")
+        if checkbox_var.get():
+            save_credentials(username, password)
+        else:
+            remove_credentials()
         login_success_popup()
     else:
+        print("Password does not match.")
         display_login_msg(
             "Usuário ou senha incorretos.\nPor favor tente novamente.")
 
 
-# Main Window
+######################################## REMEMBER USER AND PW FUNCTIONS ########################################
+# Path to 'database' folder
+database_dir = 'database'
+credentials_file = os.path.join(database_dir, 'credentials.json')
+
+
+# Save credentials function
+def save_credentials(username, password):
+    with open(credentials_file, 'w') as file:
+        json.dump({'username': username, 'password': password}, file)
+        print(f"Saved credentials: {username}, {password}")
+
+
+# Load credentials function
+def load_credentials():
+    if os.path.exists(credentials_file):
+        with open(credentials_file, 'r') as file:
+            return json.load(file)
+    return None
+
+
+# Remove credentials function
+def remove_credentials():
+    if os.path.exists(credentials_file):
+        os.remove(credentials_file)
+
+
+######################################## MAIN WINDOW ########################################
 label = ctk.CTkLabel(window, text="Sistema de login", font=("Arial", 20))
 label.pack(padx=10, pady=10)
+
 
 user = ctk.CTkEntry(window, placeholder_text="Usuário")
 user.pack(padx=10, pady=10)
 
+
 password_login = ctk.CTkEntry(window, placeholder_text="Senha", show="*")
 password_login.pack(padx=10, pady=10)
 
-checkbox = ctk.CTkCheckBox(window, text="Lembrar de mim")
+
+checkbox_var = ctk.BooleanVar()
+checkbox = ctk.CTkCheckBox(
+    window, text="Lembrar de mim", variable=checkbox_var)
 checkbox.pack(padx=10, pady=10)
 
 
@@ -351,8 +400,18 @@ btn_register_window = ctk.CTkButton(
     window, text="Cadastrar", command=open_registration_window)
 btn_register_window.pack(pady=10, padx=10)
 
+
 error_label = ctk.CTkLabel(window, text="", text_color="red")
 error_label.pack(padx=10, pady=5)
 
 
+######################################## Load credentials on app start ########################################
+credentials = load_credentials()
+if credentials:
+    user.insert(0, credentials['username'])
+    password_login.insert(0, credentials['password'])
+    checkbox_var.set(True)
+
+
+######################################## APP LOOP ########################################
 window.mainloop()
