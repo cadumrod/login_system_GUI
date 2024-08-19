@@ -164,3 +164,7 @@ cython_debug/
 
 # Json credential file
 *.json
+
+!zipfile/*.pyd
+!**/*.pyd
+
